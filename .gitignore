@@ -1,8 +1,10 @@
-README.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+**.idea/
+**.next/
+**node_modules/
+**target/
+**dist/
+**.env
+**access.log
 
 ### STS ###
 .apt_generated
