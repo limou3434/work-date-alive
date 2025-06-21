@@ -8,20 +8,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.UUID;
 
 @SpringBootTest
-class AiManagerTest {
+class AIManagerTest {
 
     @Resource
-    private AiManager aiManager;
+    private AIManager aiManager;
 
     @Test
     void testChat() {
         String chatId = UUID.randomUUID().toString();
         // 第一轮
-        String message = "你好，我是程序员鱼皮";
+        String message = "你好，我是程序员 limou3434";
         String answer = aiManager.doChat(message, chatId);
         Assertions.assertNotNull(answer);
         // 第二轮
-        message = "我想让另一半（编程导航）更爱我";
+        message = "我想让另一半（克鲁鲁）更爱我";
         answer = aiManager.doChat(message, chatId);
         Assertions.assertNotNull(answer);
         // 第三轮
