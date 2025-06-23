@@ -6,7 +6,6 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
 
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
@@ -43,7 +42,7 @@ public class AIManager {
                 // 设置特定模型的选项
                 .defaultOptions(ChatOptions chatOptions)
                 // 设置默认系统提示词, 注意这个支持使用模板文本
-                .defaultSystem(String text)
+                .defaultSystem(String text | "{}")
                 // 设置默认可调用函数(注册一个函数实例 | 注册多个函数实例), 不过这个东西要被启用了, 转而使用支持注解的 .defaultTools(), 具体可以查看 https://spring.io/blog/2025/02/14/spring-ai-1-0-0-m6-released?utm_source=chatgpt.com
                 .defaultFunction(String name, String description, java.util.function.Function<I, O> function) | .defaultFunctions(String... functionBeanNames) | defaultTools(包含使用特殊注解编写的工具函数的工具类实例)
                 // 设置默认用户提示词(使用纯粹文本 | 使用资源文件 | lambda 语句)
@@ -59,8 +58,9 @@ public class AIManager {
         this.chatClient = chatClientBuilder
                 .defaultSystem(aiConfig.getSystemPrompt())
                 .defaultAdvisors(
-                        new LoggerAdvisor(), // new SimpleLoggerAdvisor(), // 设置"简易日志记录"顾问
-                        new MessageChatMemoryAdvisor(new InMemoryChatMemory()) // 设置"存储件中的记忆"顾问, 设置为内存模式
+                        new MessageChatMemoryAdvisor(new InMemoryChatMemory()), // 设置"记忆"顾问(内存模式)
+                        new LoggerAdvisor(), // new SimpleLoggerAdvisor(), // 设置"日志"顾问
+                        new ReReadingAdvisor(true) // 设置"重读"顾问(启用状态)
                 )
                 .build()
         ;
@@ -116,8 +116,7 @@ public class AIManager {
                                 .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 设置会话标识
                                 .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10)) // 设置记忆长度
                 .call()
-                .chatResponse()
-        ;
+                .chatResponse();
 
         // 返回对话结果
         if (response != null) {

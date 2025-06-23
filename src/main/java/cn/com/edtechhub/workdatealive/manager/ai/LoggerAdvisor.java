@@ -85,7 +85,7 @@ public class LoggerAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
      * @return 处理后的请求体
      */
     private AdvisedRequest before(AdvisedRequest advisedRequest) {
-        log.debug("[LoggerAdvisor] 顾问调用前: {}", advisedRequest);
+        log.debug("[LoggerAdvisor] 顾问调用前的结果: {}", advisedRequest);
         return advisedRequest;
     }
 
@@ -96,7 +96,7 @@ public class LoggerAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
      * @return 处理后的响应体
      */
     private AdvisedResponse after(AdvisedResponse advisedResponse) {
-        log.debug("[LoggerAdvisor] 顾问调用后: {}", advisedResponse);
+        log.debug("[LoggerAdvisor] 顾问调用后的结果: {}", advisedResponse);
         return advisedResponse;
     }
 
