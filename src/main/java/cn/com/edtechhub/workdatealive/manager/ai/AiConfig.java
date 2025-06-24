@@ -32,6 +32,9 @@ public class AiConfig {
             "引导用户详述事情经过、对方反应及自身想法，以便给出专属解决方案。"
     ;
 
+    /**
+     * 对话长度
+     */
     private Integer chatMemoryRetrieveSize = 10;
 
     /**

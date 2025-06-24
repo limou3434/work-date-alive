@@ -65,6 +65,9 @@ public class ReReadingAdvisor implements CallAroundAdvisor, StreamAroundAdvisor 
                 .nextAroundStream(modifiedRequest)
                 // 处理响应(后置处理)
                 .map(this::after);
+
+        // TODO: 对于需要更复杂处理的流式场景，可以使用 Reactor 的操‌作符
+        // TODO: 可以使用 adviseContext 在 Advisor 链中共享状态
     }
 
     /**
@@ -95,7 +98,7 @@ public class ReReadingAdvisor implements CallAroundAdvisor, StreamAroundAdvisor 
      * @return 处理后的请求体
      */
     private AdvisedRequest before(AdvisedRequest advisedRequest) {
-        log.debug("[ReReadingAdvisor] 顾问调用前: {}", advisedRequest);
+        log.debug("[ReReadingAdvisor] 调用一次重读顾问");
 
         // 如果未启用则直接跳过处理
         if (!this.enabled) {
@@ -123,7 +126,6 @@ public class ReReadingAdvisor implements CallAroundAdvisor, StreamAroundAdvisor 
      * @return 处理后的响应体
      */
     private AdvisedResponse after(AdvisedResponse advisedResponse) {
-        log.debug("[ReReadingAdvisor] 顾问调用后: {}", advisedResponse);
         return advisedResponse;
     }
 

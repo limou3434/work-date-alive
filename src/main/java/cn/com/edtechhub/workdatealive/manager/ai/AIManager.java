@@ -1,5 +1,6 @@
 package cn.com.edtechhub.workdatealive.manager.ai;
 
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -18,6 +19,12 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 public class AIManager {
 
     /**
+     * 注入配置依赖
+     */
+    @Resource
+    AiConfig aiConfig;
+
+    /**
      * 等待构造引用的聊天客户端
      */
     private final ChatClient chatClient;
@@ -29,6 +36,8 @@ public class AIManager {
      * @param chatClientBuilder 自动引入构造类依赖
      */
     public AIManager(AiConfig aiConfig, ChatClient.Builder chatClientBuilder) {
+        // 注意这里的配置类还无法直接注入, 需要在构造函数处编写可以被自动注入的参数
+
         /* 关闭自动引入大模型后自定义模型引入
           // 如果需要关闭自动导入则需要先设置 spring.ai.chat.client.enabled: false, 并且补充配置关于其他大模型的配置
           ChatModel myChatModel = 根据官方文档针对不同大模型来进行创建...;
@@ -67,13 +76,13 @@ public class AIManager {
     }
 
     /**
-     * 对话方法
+     * 简单对话方法
      *
      * @param message 用户消息
      * @param chatId  会话标识
      * @return 回答消息
      */
-    public String doChat(String message, String chatId) {
+    public String doChatReturnString(String message, String chatId) {
         /*
         // 实际对话过程(非流结果和流式结果)
         ChatResponse response | Flux<String> = chatClient
@@ -114,7 +123,7 @@ public class AIManager {
                 .advisors(
                         spec -> spec
                                 .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 设置会话标识
-                                .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10)) // 设置记忆长度
+                                .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, aiConfig.getChatMemoryRetrieveSize())) // 设置记忆长度
                 .call()
                 .chatResponse();
 
@@ -123,6 +132,26 @@ public class AIManager {
             return response.getResult().getOutput().getText();
         }
         return null;
+    }
+
+    /**
+     * 携带恋爱报告的对话方法
+     *
+     * @param message 用户消息
+     * @param chatId  会话标识
+     * @return 恋爱报告
+     */
+    public LoveReport doChatReturnLoveReport(String message, String chatId) {
+        return chatClient
+                .prompt()
+                .system(aiConfig.getSystemPrompt() + "每次对话后都要生成恋爱结果，标题为{用户名}的恋爱报告，内容为建议列表")
+                .user(message)
+                .advisors(spec -> spec
+                        .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, aiConfig.getChatMemoryRetrieveSize()))
+                .call()
+                .entity(LoveReport.class);
+        // 如果观察 Advisor 下的请求体就会发现内部的 formatParam 中对象被转换为了 JSON Schema 描述语言
     }
 
 }
