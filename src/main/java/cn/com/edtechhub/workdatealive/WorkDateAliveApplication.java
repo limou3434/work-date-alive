@@ -43,7 +43,7 @@ public class WorkDateAliveApplication {
         log.debug("[TEST] 回答 {}", answer);
 
         // 恋爱报告
-        log.debug("[AIManagerTest] 测试生成恋爱报告");
+        log.debug("[TEST] 测试生成恋爱报告");
         message = "为我生成一份恋爱报告";
         LoveReport loveReport = aiManager.doChatReturnLoveReport(message, chatId);
         log.debug("[TEST] 回答 {}", loveReport);

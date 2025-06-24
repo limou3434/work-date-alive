@@ -28,7 +28,7 @@ public class AIController {
             @RequestParam(value = "message", defaultValue = "你是谁")
             String message
     ) {
-        return aiManager.doChat(message, "1");
+        return aiManager.doChatReturnString(message, "1");
     }
 
 }
