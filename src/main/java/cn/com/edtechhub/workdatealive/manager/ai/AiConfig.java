@@ -38,6 +38,11 @@ public class AiConfig {
     private Integer chatMemoryRetrieveSize = 10;
 
     /**
+     * 保存数据持久化文件的目录
+     */
+    private String dataSaveFileDir = "./log/message/";
+
+    /**
      * 打印配置
      */
     @PostConstruct

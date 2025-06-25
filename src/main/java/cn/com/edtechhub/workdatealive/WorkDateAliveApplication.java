@@ -22,7 +22,7 @@ public class WorkDateAliveApplication {
         AIManager aiManager = context.getBean(AIManager.class);
 
         // 测试简单对话
-        String chatId = UUID.randomUUID().toString();
+        String chatId = "1";
 
         // 第一轮
         log.debug("[TEST] 第一轮");

@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Component;
@@ -67,7 +68,7 @@ public class AIManager {
         this.chatClient = chatClientBuilder
                 .defaultSystem(aiConfig.getSystemPrompt())
                 .defaultAdvisors(
-                        new MessageChatMemoryAdvisor(new InMemoryChatMemory()), // 设置"记忆"顾问(内存模式)
+                        new MessageChatMemoryAdvisor(new InFileMemory(aiConfig.getDataSaveFileDir())), // new MessageChatMemoryAdvisor(new InMemoryChatMemory()), // 设置"记忆"顾问(内存模式)
                         new LoggerAdvisor(), // new SimpleLoggerAdvisor(), // 设置"日志"顾问
                         new ReReadingAdvisor(true) // 设置"重读"顾问(启用状态)
                 )
