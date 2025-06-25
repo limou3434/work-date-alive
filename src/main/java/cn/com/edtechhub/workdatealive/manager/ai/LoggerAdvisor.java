@@ -14,6 +14,8 @@ import reactor.core.publisher.Flux;
 @Slf4j
 public class LoggerAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
 
+    // TODO: 后期还可以写 权限校验(CheckAuthorAdvisor)、违禁校验(containsProhibitedWordsAdvisor) 这两个比较重要的校验顾问
+
     /**
      * 实现非流顾问接口中的核心方法
      *

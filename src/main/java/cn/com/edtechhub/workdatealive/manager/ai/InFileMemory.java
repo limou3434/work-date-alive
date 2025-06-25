@@ -23,6 +23,8 @@ import java.util.List;
 @Slf4j
 public class InFileMemory implements ChatMemory {
 
+    // TODO: 后期可以考虑升级该类以支持持久化对话到 MySQL 或 Redis 存储中, 最好是定义一个 ConversationStorageStrategy 接口和父类 StrategyBasedMemory, 然后分别派生 InFileMemory、InDatabaseMemory、InedisMemory 等子类
+
     /**
      * 对话持久文件保存目录
      */

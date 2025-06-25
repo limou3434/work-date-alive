@@ -4,8 +4,6 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +16,8 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 @Component
 @Slf4j
 public class AIManager {
+
+    // TODO: 编写一套包含变量的 Prompt 模板, 并保存为资源文件, 从文件加载模板
 
     /**
      * 注入配置依赖
@@ -51,17 +51,16 @@ public class AIManager {
         ChatClient chatClient = chatClientBuilder
                 // 设置特定模型的选项
                 .defaultOptions(ChatOptions chatOptions)
-                // 设置默认系统提示词, 注意这个支持使用模板文本
-                .defaultSystem(String text | "{}")
                 // 设置默认可调用函数(注册一个函数实例 | 注册多个函数实例), 不过这个东西要被启用了, 转而使用支持注解的 .defaultTools(), 具体可以查看 https://spring.io/blog/2025/02/14/spring-ai-1-0-0-m6-released?utm_source=chatgpt.com
                 .defaultFunction(String name, String description, java.util.function.Function<I, O> function) | .defaultFunctions(String... functionBeanNames) | defaultTools(包含使用特殊注解编写的工具函数的工具类实例)
+                // 设置默认系统提示词, 注意这个支持使用模板文本(文本 | 资源 | lambda)
+                .defaultSystem(String text | Resource text | Consumer<PromptSystemSpec> consumer)
                 // 设置默认用户提示词(使用纯粹文本 | 使用资源文件 | lambda 语句)
                 .defaultUser(String text) | .defaultUser(Resource text) | .defaultUser(Consumer<UserSpec> userSpecConsumer)
                 // 设置默认顾问中间件(顾问实例或 lambda 语句)
                 .defaultAdvisors(Advisor... advisor) | defaultAdvisors(Consumer<AdvisorSpec> advisorSpecConsumer)
                 // 开始构建(在这里之前其实会自动引入配置文件中所配置的 AI 相关信息)
-                .build()
-                ;
+                .build();
         */
 
         // 构建一个聊天客户端交给引用成员
@@ -97,16 +96,15 @@ public class AIManager {
                                 .param("模板文本1", "填充的文本值1")
                                 .param("模板文本2", "填充的文本值2")
                                 .param ...
-                ) // 填写
-                // 设置用户提示词
-                .user(String text)
+                )
+                // 设置用户提示词(文本 | 资源 | lambda)
+                .user(String text | Resource text | Consumer<PromptUserSpec> consumer)
                 // 设置顾问中间件
                 .advisors(Advisor... advisor)
                 // 设置开始本对话(同步 | 异步)
                 .call() | .stream()
                 // 设置获得本响应(同步 | 异步 | 结构), 设置结构化数据(大模型需要支持严格 json, 并且使用了这一句后就可以直接作为实例进行返回)
-                .chatResponse() | .content() | .entity(类名.class)
-                ;
+                .chatResponse() | .content() | .entity(类名.class);
 
                 // 非流读取
                 response.getResult().getOutput().getText();
@@ -122,7 +120,7 @@ public class AIManager {
                 .prompt()
                 .user(message)
                 .advisors(
-                        spec -> spec
+                        advisorSpec -> advisorSpec
                                 .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 设置会话标识
                                 .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, aiConfig.getChatMemoryRetrieveSize())) // 设置记忆长度
                 .call()
