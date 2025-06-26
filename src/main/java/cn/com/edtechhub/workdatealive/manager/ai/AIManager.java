@@ -27,11 +27,8 @@ public class AIManager {
     @Resource
     AiConfig aiConfig;
 
-    /**
-     * 引入向量存储依赖
-     */
     @Resource
-    private VectorStore vectorStore;
+    VectorStore vectorStore;
 
     /**
      * 等待构造引用的聊天客户端
@@ -76,21 +73,77 @@ public class AIManager {
                 .defaultSystem(aiConfig.getSystemPrompt())
                 .defaultAdvisors(
                         new MessageChatMemoryAdvisor(new InFileMemory(aiConfig.getDataSaveFileDir())), // new MessageChatMemoryAdvisor(new InMemoryChatMemory()), // 设置"记忆"顾问(内存模式)
-                        new LoggerAdvisor(), // new SimpleLoggerAdvisor(), // 设置"日志"顾问
-                        new ReReadingAdvisor(true) // 设置"重读"顾问(启用状态)
+                        new LoggerAdvisor() // new SimpleLoggerAdvisor(), // 设置"日志"顾问(便于调试)
                 )
                 .build()
         ;
     }
 
     /**
-     * 简单对话方法
+     * 简单的对话方法
      *
      * @param message 用户消息
      * @param chatId  会话标识
      * @return 回答消息
      */
     public String doChat(String message, String chatId) {
+        /*
+        // 实际对话过程(非流结果和流式结果)
+        ChatResponse response | Flux<String> = chatClient
+                // 设置为链式构造
+                .prompt(包含使用特殊注解编写的工具函数的工具类实例)
+                // 设置可调用函数
+                .tools()
+                // 设置系统的模板, 如果有设置消息模板的话
+                .system(
+                        sp -> sp
+                                .param("模板文本1", "填充的文本值1")
+                                .param("模板文本2", "填充的文本值2")
+                                .param ...
+                )
+                // 设置用户提示词(文本 | 资源 | lambda)
+                .user(String text | Resource text | Consumer<PromptUserSpec> consumer)
+                // 设置顾问中间件
+                .advisors(Advisor... advisor)
+                // 设置开始本对话(同步 | 异步)
+                .call() | .stream()
+                // 设置获得本响应(同步 | 异步 | 结构), 设置结构化数据(大模型需要支持严格 json, 并且使用了这一句后就可以直接作为实例进行返回)
+                .chatResponse() | .content() | .entity(类名.class);
+
+                // 非流读取
+                response.getResult().getOutput().getText();
+
+                // 流式读取
+                response.doOnNext(line -> {
+                    log.debug("[limou] 收到一段响应: {}", line); // 可以进一步考虑使用 WebSocket
+                }).blockLast(); // 等到最后一个事件发出
+        */
+
+        ChatResponse response = chatClient
+                .prompt()
+                .user(message)
+                .advisors(
+                        advisorSpec -> advisorSpec
+                                .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 设置会话标识
+                                .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, aiConfig.getChatMemoryRetrieveSize()) // 设置记忆长度
+                ) // 设置会话记忆顾问
+                .call()
+                .chatResponse();
+
+        if (response != null) {
+            return response.getResult().getOutput().getText();
+        }
+        return null;
+    }
+
+    /**
+     * 支持重读的对话方法
+     *
+     * @param message 用户消息
+     * @param chatId  会话标识
+     * @return 回答消息
+     */
+    public String doReReadChat(String message, String chatId) {
         /*
         // 实际对话过程(非流结果和流式结果)
         ChatResponse response | Flux<String> = chatClient
@@ -132,10 +185,10 @@ public class AIManager {
                                 .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 设置会话标识
                                 .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, aiConfig.getChatMemoryRetrieveSize()) // 设置记忆长度
                 ) // 设置会话记忆顾问
+                .advisors(new ReReadingAdvisor(true)) // 设置"重读"顾问
                 .call()
                 .chatResponse();
 
-        // 返回对话结果
         if (response != null) {
             return response.getResult().getOutput().getText();
         }
@@ -163,13 +216,13 @@ public class AIManager {
     }
 
     /**
-     * 携带向量数据的对话方法
+     * 携带本地向量数据的对话方法
      *
      * @param message 用户消息
      * @param chatId  会话标识
-     * @return 回答消息
+     * @return 结合知识库回答消息
      */
-    public String doChatWithRag(String message, String chatId) {
+    public String doChatWithLocalRag(String message, String chatId) {
         ChatResponse response = chatClient
                 .prompt()
                 .user(message)
@@ -177,16 +230,26 @@ public class AIManager {
                         advisorSpec -> advisorSpec
                                 .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 设置会话标识
                                 .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, aiConfig.getChatMemoryRetrieveSize()) // 设置记忆长度
-                ) // 设置会话记忆顾问
-                .advisors(new QuestionAnswerAdvisor(vectorStore)) // 设置知识问答顾问
+                ) // 设置"记忆"顾问
+                .advisors(new QuestionAnswerAdvisor(vectorStore)) // 设置"知识"顾问
                 .call()
                 .chatResponse();
 
-        // 返回对话结果
         if (response != null) {
             return response.getResult().getOutput().getText();
         }
         return null;
+    }
+
+    /**
+     * 携带远端向量数据的对话方法
+     *
+     * @param message 用户消息
+     * @param chatId  会话标识
+     * @return 结合知识库回答消息
+     */
+    public String doChatWithRemoteRag(String message, String chatId) {
+
     }
 
 }

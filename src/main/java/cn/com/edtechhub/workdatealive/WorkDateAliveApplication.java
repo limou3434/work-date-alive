@@ -5,6 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * 启动程序
+ *
+ * @author <a href="https://github.com/limou3434">limou3434</a>
+ */
 @SpringBootApplication
 @Slf4j
 public class WorkDateAliveApplication {
@@ -46,8 +51,8 @@ public class WorkDateAliveApplication {
 //        LoveReport loveReport = aiManager.doChatReturnLoveReport(message, chatId);
 //        log.debug("[TEST] 回答 {}", loveReport);
 
-        message = "我已经结婚了，但是婚后关系不太亲密，怎么办？";
-        log.debug("[TEST] 回答 {}", aiManager.doChatWithRag(message, chatId));
+//        message = "我已经结婚了，但是婚后关系不太亲密，怎么办？";
+//        log.debug("[TEST] 回答 {}", aiManager.doChatWithLocalRag(message, chatId));
 
     }
 

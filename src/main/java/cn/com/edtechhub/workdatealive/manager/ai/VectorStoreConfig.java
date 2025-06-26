@@ -33,9 +33,8 @@ public class VectorStoreConfig {
         // 加载 Spring AI 实现的基于内存的简易向量数据库
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
 
-        // 加载获取文档列表
+        // 加载获取文档列表到向量数据库中
         List<Document> documents = documentLoader.loadMarkdowns();
-
         simpleVectorStore.add(documents);
         return simpleVectorStore;
     }

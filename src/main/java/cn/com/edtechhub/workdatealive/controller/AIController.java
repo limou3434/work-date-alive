@@ -13,22 +13,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/ai")
 public class AIController {
 
-    /**
-     * 引入 AI 管理器依赖
-     */
-    AIManager aiManager;
-
-    @GetMapping
-    public String healthCheck() {
-        return "ok";
-    }
-
-    @GetMapping("/generate")
-    public String generate(
-            @RequestParam(value = "message", defaultValue = "你是谁")
-            String message
-    ) {
-        return aiManager.doChat(message, "1");
-    }
+//    /**
+//     * 引入 AI 管理器依赖
+//     */
+//    AIManager aiManager;
+//
+//    @GetMapping
+//    public String healthCheck() {
+//        return "ok";
+//    }
+//
+//    @GetMapping("/generate")
+//    public String generate(
+//            @RequestParam(value = "message", defaultValue = "你是谁")
+//            String message
+//    ) {
+//        return aiManager.doChat(message, "1");
+//    }
 
 }
