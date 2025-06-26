@@ -1,12 +1,9 @@
 package cn.com.edtechhub.workdatealive;
 
 import cn.com.edtechhub.workdatealive.manager.ai.AIManager;
-import cn.com.edtechhub.workdatealive.manager.ai.LoveReport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.UUID;
 
 @SpringBootApplication
 @Slf4j
@@ -21,12 +18,13 @@ public class WorkDateAliveApplication {
 
         AIManager aiManager = context.getBean(AIManager.class);
 
-//        // 测试简单对话
-//        String chatId = "1";
-//
+        // 测试对话
+        String chatId = "1";
+        String message;
+
 //        // 第一轮
 //        log.debug("[TEST] 第一轮");
-//        String message = "你好，我是程序员 limou3434";
+//        message = "你好，我是程序员 limou3434";
 //        String answer = aiManager.doChatReturnString(message, chatId);
 //        log.debug("[TEST] 回答 {}", answer);
 //
@@ -47,6 +45,9 @@ public class WorkDateAliveApplication {
 //        message = "为我生成一份恋爱报告";
 //        LoveReport loveReport = aiManager.doChatReturnLoveReport(message, chatId);
 //        log.debug("[TEST] 回答 {}", loveReport);
+
+        message = "我已经结婚了，但是婚后关系不太亲密，怎么办？";
+        log.debug("[TEST] 回答 {}", aiManager.doChatWithRag(message, chatId));
 
     }
 
