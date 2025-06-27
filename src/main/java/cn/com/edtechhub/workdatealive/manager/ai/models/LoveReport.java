@@ -1,4 +1,4 @@
-package cn.com.edtechhub.workdatealive.manager.ai;
+package cn.com.edtechhub.workdatealive.manager.ai.models;
 
 import java.util.List;
 

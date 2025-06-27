@@ -1,11 +1,17 @@
 package cn.com.edtechhub.workdatealive.manager.ai;
 
+import cn.com.edtechhub.workdatealive.manager.ai.advisors.LoggerAdvisor;
+import cn.com.edtechhub.workdatealive.manager.ai.advisors.ReReadingAdvisor;
+import cn.com.edtechhub.workdatealive.manager.ai.memorys.InFileMemory;
+import cn.com.edtechhub.workdatealive.manager.ai.models.LoveReport;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.rag.retrieval.search.DocumentRetriever;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Component;
 
@@ -27,8 +33,17 @@ public class AIManager {
     @Resource
     AiConfig aiConfig;
 
+    /**
+     * 注入向量存储依赖
+     */
     @Resource
     VectorStore vectorStore;
+
+    /**
+     * 注入文档加载器依赖
+     */
+    @Resource
+    DocumentRetriever documentRetriever;
 
     /**
      * 等待构造引用的聊天客户端
@@ -38,8 +53,8 @@ public class AIManager {
     /**
      * 公有构造方法
      *
-     * @param aiConfig          自动引入配置类依赖
-     * @param chatClientBuilder 自动引入构造类依赖
+     * @param aiConfig          自动注入配置类依赖
+     * @param chatClientBuilder 自动注入构造类依赖
      */
     public AIManager(AiConfig aiConfig, ChatClient.Builder chatClientBuilder) {
         // 注意这里的配置类还无法直接注入, 需要在构造函数处编写可以被自动注入的参数
@@ -220,7 +235,7 @@ public class AIManager {
      *
      * @param message 用户消息
      * @param chatId  会话标识
-     * @return 结合知识库回答消息
+     * @return 结合本地知识库回答消息
      */
     public String doChatWithLocalRag(String message, String chatId) {
         ChatResponse response = chatClient
@@ -231,7 +246,7 @@ public class AIManager {
                                 .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 设置会话标识
                                 .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, aiConfig.getChatMemoryRetrieveSize()) // 设置记忆长度
                 ) // 设置"记忆"顾问
-                .advisors(new QuestionAnswerAdvisor(vectorStore)) // 设置"知识"顾问
+                .advisors(new QuestionAnswerAdvisor(vectorStore)) // 设置"本地知识"顾问
                 .call()
                 .chatResponse();
 
@@ -246,10 +261,35 @@ public class AIManager {
      *
      * @param message 用户消息
      * @param chatId  会话标识
-     * @return 结合知识库回答消息
+     * @return 结合远端知识库回答消息
      */
     public String doChatWithRemoteRag(String message, String chatId) {
+        // 需要在 https://bailian.console.aliyun.com/?tab=app#/data-center 中提前上传资料
+        // 然后在 https://bailian.console.aliyun.com/?tab=app#/knowledge-base 中创建知识库
+        // 最后在 https://java2ai.com/docs/1.0.0-M6.1/tutorials/retriever/#%E7%A4%BA%E4%BE%8B%E7%94%A8%E6%B3%95 参考阿里巴巴关于 Spring AI Alibaba 关于文档检索的描述
+        // 注意我们需要使用 Spring AI 提供的另一个 RAG Advisor —— RetrievalAugmentationAdvisor 检索增强顾问, 可以绑定文档检索器、查询转换器、查询增强器，更灵活地构造查询
 
+        ChatResponse response = chatClient
+                .prompt()
+                .user(message)
+                .advisors(
+                        advisorSpec -> advisorSpec
+                                .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 设置会话标识
+                                .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, aiConfig.getChatMemoryRetrieveSize()) // 设置记忆长度
+                ) // 设置"记忆"顾问
+                .advisors(
+                        RetrievalAugmentationAdvisor
+                                .builder()
+                                .documentRetriever(documentRetriever)
+                                .build()
+                ) // 设置"远端知识"顾问
+                .call()
+                .chatResponse();
+
+        if (response != null) {
+            return response.getResult().getOutput().getText();
+        }
+        return null;
     }
 
 }

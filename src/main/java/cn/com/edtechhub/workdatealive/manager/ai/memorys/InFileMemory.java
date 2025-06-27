@@ -1,4 +1,4 @@
-package cn.com.edtechhub.workdatealive.manager.ai;
+package cn.com.edtechhub.workdatealive.manager.ai.memorys;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;

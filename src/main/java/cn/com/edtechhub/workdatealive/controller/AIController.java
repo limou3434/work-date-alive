@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AIController {
 
 //    /**
-//     * 引入 AI 管理器依赖
+//     * 注入 AI 管理器依赖
 //     */
 //    AIManager aiManager;
 //

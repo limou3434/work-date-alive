@@ -7,7 +7,7 @@ import org.springframework.ai.chat.client.ChatClient;
 public class AIServiceImpl implements AIService {
 
     /**
-     * 引入 AI 管理器依赖
+     * 注入 AI 管理器依赖
      */
     AIManager aiManager;
 
