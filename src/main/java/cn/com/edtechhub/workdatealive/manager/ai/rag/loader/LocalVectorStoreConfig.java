@@ -1,4 +1,4 @@
-package cn.com.edtechhub.workdatealive.manager.ai.rag;
+package cn.com.edtechhub.workdatealive.manager.ai.rag.loader;
 
 import jakarta.annotation.Resource;
 import org.springframework.ai.document.Document;

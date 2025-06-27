@@ -1,22 +1,15 @@
 
-package cn.com.edtechhub.workdatealive.manager.ai.rag;
+package cn.com.edtechhub.workdatealive.manager.ai.rag.remote;
 
 import cn.com.edtechhub.workdatealive.manager.ai.AiConfig;
 import com.alibaba.cloud.ai.dashscope.api.DashScopeApi;
 import com.alibaba.cloud.ai.dashscope.rag.DashScopeDocumentRetriever;
 import com.alibaba.cloud.ai.dashscope.rag.DashScopeDocumentRetrieverOptions;
 import jakarta.annotation.Resource;
-import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
-import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.rag.retrieval.search.DocumentRetriever;
-import org.springframework.ai.vectorstore.SimpleVectorStore;
-import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
 
 /**
  * 配置远端向量存储库依赖并且导出
