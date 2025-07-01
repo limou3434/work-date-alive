@@ -12,6 +12,7 @@ import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.rag.retrieval.search.DocumentRetriever;
+import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +45,12 @@ public class AIManager {
      */
     @Resource
     DocumentRetriever documentRetriever;
+
+    /**
+     * 注入工具列表依赖
+     */
+    @Resource
+    private ToolCallback[] allTools;
 
     /**
      * 等待构造引用的聊天客户端
@@ -283,6 +290,32 @@ public class AIManager {
                                 .documentRetriever(documentRetriever)
                                 .build()
                 ) // 设置"远端知识"顾问
+                .call()
+                .chatResponse();
+
+        if (response != null) {
+            return response.getResult().getOutput().getText();
+        }
+        return null;
+    }
+
+    /**
+     * 携带工具的对话方法
+     *
+     * @param message 用户消息
+     * @param chatId  会话标识
+     * @return 回答消息
+     */
+    public String doChatWithTools(String message, String chatId) {
+        ChatResponse response = chatClient
+                .prompt()
+                .user(message)
+                .advisors(
+                        advisorSpec -> advisorSpec
+                                .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 设置会话标识
+                                .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, aiConfig.getChatMemoryRetrieveSize()) // 设置记忆长度
+                )
+                .tools(allTools) // 设置工具列表
                 .call()
                 .chatResponse();
 

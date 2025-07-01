@@ -1,3 +1,4 @@
+#file: noinspection SpringBootApplicationYaml
 # 配置框架(使用 java -jar app.jar --spring.profiles.active=develop | release | production 来启动项目, 其中 release 有时间就拿来测试, 而 production 存储在 Github 上, 每次修改 Github 配置就需要刷新(这个有时间可以优化为无需重启))
 spring:
   ## 配置名称
@@ -23,6 +24,7 @@ logging:
   level:
     # root: DEBUG # 如果需要仔细调试可以打开这个选项
     cn.com.edtechhub.workdatealive: DEBUG # 控制本项目包内的日志输出等级 TRACE | DEBUG | INFO | WARN | ERROR | FATAL
+    org.springframework.ai: DEBUG
 
 # 配置文档
 springdoc:
@@ -44,3 +46,7 @@ knife4j: # knife4j 的增强配置(不需要增强可以不配)
   enable: true
   setting:
     language: zh_cn
+
+# 配置搜索
+search-api:
+  api-key: ${WDA_SEARCH_API_KEY}

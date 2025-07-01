@@ -1,5 +1,5 @@
 
-package cn.com.edtechhub.workdatealive.manager.ai.rag.remote;
+package cn.com.edtechhub.workdatealive.manager.ai.rag.cloud;
 
 import cn.com.edtechhub.workdatealive.manager.ai.AiConfig;
 import com.alibaba.cloud.ai.dashscope.api.DashScopeApi;
@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * 配置远端向量存储库依赖并且导出
+ *
+ * @author <a href="https://github.com/limou3434">limou3434</a>
  */
 @Configuration
 public class RemoteVectorStoreConfig {
