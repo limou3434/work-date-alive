@@ -47,7 +47,7 @@ public class AiConfig {
      */
     @PostConstruct
     public void printConfig() {
-        log.debug("[AIConfig] 当前项目 AI 密钥已加载为 {}, 提示词语已设置为 {}, 对话长度为 {}", this.apiKey, this.systemPrompt, this.chatMemoryRetrieveSize);
+        log.debug("[{}] {}", this.getClass().getSimpleName(), this);
     }
 
 }

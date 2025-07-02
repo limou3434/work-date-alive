@@ -13,9 +13,10 @@ spring:
         model: qwen-plus
     mcp:
       client:
-        stdio:
-          servers-configuration: classpath:mcp-servers.json # 配置 MCP 服务
-        timeout: 60000
+        sse:
+          connections:
+            work-mcp-server:
+              url: http://127.0.0.1:8127
 
 # 配置服务
 server:
