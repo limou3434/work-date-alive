@@ -11,6 +11,11 @@ spring:
     chat:
       options:
         model: qwen-plus
+    mcp:
+      client:
+        stdio:
+          servers-configuration: classpath:mcp-servers.json # 配置 MCP 服务
+        timeout: 60000
 
 # 配置服务
 server:
