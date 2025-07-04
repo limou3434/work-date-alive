@@ -57,8 +57,8 @@ public class WorkDateAliveApplication {
 //        message = "我已经结婚了，但是婚后关系不太亲密，怎么办？";
 //        log.debug("[TEST] 回答 {}", aiManager.doChatWithRemoteRag(message, chatId));
 
-        message = "帮我搜索一些哄另一半开心的图片";
-        log.debug("[TEST] 回答 {}", aiManager.doChatWithMcp(message, chatId));
+//        message = "帮我搜索一些哄另一半开心的图片";
+//        log.debug("[TEST] 回答 {}", aiManager.doChatWithMcp(message, chatId));
 
     }
 
