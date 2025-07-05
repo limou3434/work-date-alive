@@ -7,11 +7,4 @@ import org.springframework.ai.chat.client.ChatClient;
  */
 public interface AIService {
 
-    /**
-     * 与 AI 进行文本对话
-     *
-     * @return 对话结果
-     */
-    String textDialogue();
-
 }

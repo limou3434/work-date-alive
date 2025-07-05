@@ -10,7 +10,7 @@ spring:
       api-key: ${ALY_AI_API_KEY}
     chat:
       options:
-        model: qwen-plus
+        model: qwen-plus # qwen-plus-2025-04-28 # 可以在这里 https://bailian.console.aliyun.com/console?tab=model#/model-market/detail/qwen-plus?modelGroup=qwen-plus 选择喜好的模型
     mcp:
       client:
         sse:

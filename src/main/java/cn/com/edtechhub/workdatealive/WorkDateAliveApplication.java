@@ -61,15 +61,17 @@ public class WorkDateAliveApplication {
 //        message = "帮我搜索一些哄另一半开心的图片";
 //        log.debug("[TEST] 回答 {}", aiManager.doChatWithMcp(message, chatId));
 
-        Manus manus = context.getBean(Manus.class);
-
-        String userPrompt = """  
-                我的另一半居住在上海静安区，请帮我找到 5 公里内合适的约会地点，
-                并结合一些网络图片，制定一份详细的约会计划，
-                并以 PDF 格式输出""";
-        String answer = manus.run(userPrompt);
-
-        log.debug("[TEST] 回答 {}", answer);
+//        Manus manus = new Manus();
+//
+//        String userPrompt = """
+//                我的另一半居住在上海静安区，请帮我找到 5 公里内合适的约会地点。
+//                并结合一些网络图片，这些图片必须真实存在，并且注意图片的格式和原来下载的一致，制定一份详细的约会计划。
+//                最后一个步骤需要把所有收集到的结果和资源整理为 Markdown 格式的文件进行输出，文件名字为 my_live.md, 再把 Markdown 文件转化为纯文本后再转为 PDF 格式输出，文件名字为 my_live.pdf。
+//                你可以一次选择多个工具进行调用。
+//                """;
+//        String answer = manus.run(userPrompt);
+//
+//        log.debug("[TEST] 回答 {}", answer);
 
     }
 
@@ -79,3 +81,4 @@ public class WorkDateAliveApplication {
 // TODO: 可以优化一些关于 if 判断是否抛出异常的代码, 引入通用工具包
 // TODO: 给智能体添加循环检测和处理机制，防止智能体陷入无限循环
 // TODO: 尝试给每一个类都加上单元测试
+// TODO: 智能体可以支持交互式执行, 可以向用户询问信息或获取反馈, 从而优化‌任务的完成效果

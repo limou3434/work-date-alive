@@ -12,12 +12,14 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.rag.retrieval.search.DocumentRetriever;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
@@ -63,14 +65,15 @@ public class AIManager {
     private ToolCallbackProvider toolCallbackProvider;
 
     /**
-     * 注入智能体依赖
-     */
-    Manus manus;
-
-    /**
      * 等待构造引用的聊天客户端
      */
     private final ChatClient chatClient;
+
+    /**
+     * 注入默认的大模型依赖
+     */
+    @Resource
+    private ChatModel dashscopeChatModel;
 
     /**
      * 公有构造方法
@@ -344,7 +347,7 @@ public class AIManager {
      * 携带 MCP 服务的对话方法
      *
      * @param message 用户消息
-     * @param chatId 会话标识
+     * @param chatId  会话标识
      * @return 回答消息
      */
     public String doChatWithMcp(String message, String chatId) {
@@ -366,13 +369,33 @@ public class AIManager {
         return null;
     }
 
-//    /**
-//     * 获取智能体
-//     *
-//     * @return 智能体
-//     */
-//    public Manus getManus() {
-//        return this.manus;
-//    }
+    /**
+     * 流式的对话方法
+     *
+     * @param message 用户消息
+     * @param chatId  会话标识
+     * @return 回答消息
+     */
+    public Flux<String> doChatByStream(String message, String chatId) {
+        return chatClient
+                .prompt()
+                .user(message)
+                .advisors(
+                        spec -> spec
+                                .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                                .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY,  aiConfig.getChatMemoryRetrieveSize())
+                )
+                .stream()
+                .content();
+    }
+
+    /**
+     * 获取超级智能体
+     *
+     * @return 超级智能体
+     */
+    public Manus createManus() {
+        return new Manus(this.allTools, this.dashscopeChatModel);
+    }
 
 }

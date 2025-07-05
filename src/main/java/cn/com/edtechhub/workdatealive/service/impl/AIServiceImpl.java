@@ -11,9 +11,4 @@ public class AIServiceImpl implements AIService {
      */
     AIManager aiManager;
 
-    @Override
-    public String textDialogue() {
-        return null;
-    }
-
 }

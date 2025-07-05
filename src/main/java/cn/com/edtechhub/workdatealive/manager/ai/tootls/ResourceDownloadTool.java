@@ -37,7 +37,7 @@ public class ResourceDownloadTool {
             FileUtil.mkdir(fileDir);
             // 使用 Hutool 的 downloadFile 方法下载资源
             HttpUtil.downloadFile(url, new File(filePath));
-            return "资源下载成功 " + filePath;
+            return "资源下载成功 " + filePath + ", 后续如果有文件需要引用下载好的资源则直接使用绝对路径";
         } catch (Exception e) {
             return "下载资源错误 " + e.getMessage();
         }
