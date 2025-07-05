@@ -2,9 +2,11 @@ package cn.com.edtechhub.workdatealive.manager.ai;
 
 import cn.com.edtechhub.workdatealive.manager.ai.advisors.LoggerAdvisor;
 import cn.com.edtechhub.workdatealive.manager.ai.advisors.ReReadingAdvisor;
+import cn.com.edtechhub.workdatealive.manager.ai.agent.Manus;
 import cn.com.edtechhub.workdatealive.manager.ai.memorys.InFileMemory;
 import cn.com.edtechhub.workdatealive.manager.ai.models.LoveReport;
 import jakarta.annotation.Resource;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -25,6 +27,7 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
  */
 @Component
 @Slf4j
+@Data
 public class AIManager {
 
     // TODO: 编写一套包含变量的 Prompt 模板, 并保存为资源文件, 从文件加载模板
@@ -58,6 +61,11 @@ public class AIManager {
      */
     @Resource
     private ToolCallbackProvider toolCallbackProvider;
+
+    /**
+     * 注入智能体依赖
+     */
+    Manus manus;
 
     /**
      * 等待构造引用的聊天客户端
@@ -357,5 +365,14 @@ public class AIManager {
         }
         return null;
     }
+
+//    /**
+//     * 获取智能体
+//     *
+//     * @return 智能体
+//     */
+//    public Manus getManus() {
+//        return this.manus;
+//    }
 
 }

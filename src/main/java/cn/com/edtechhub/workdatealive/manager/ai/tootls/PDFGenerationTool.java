@@ -9,6 +9,7 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -17,12 +18,13 @@ import java.io.IOException;
  *
  * @author <a href="https://github.com/limou3434">limou3434</a>
  */
+@Component
 public class PDFGenerationTool {
 
     /**
      * 文件保存目录
      */
-    private final String FILE_SAVE_DIR = System.getProperty("user.dir") + "/tmp";
+    private final String fileSaveDir = System.getProperty("user.dir") + "/temp"; // 很多工具类都用这个目录, 建议加入 KFC 豪华套餐...
 
     /**
      * 生成 PDF
@@ -31,11 +33,11 @@ public class PDFGenerationTool {
      * @param content  写入的内容
      * @return 生成结果
      */
-    @Tool(description = "Generate a PDF file with given content")
+    @Tool(description = "生成具有给定内容的 PDF 文件")
     public String generatePDF(
-            @ToolParam(description = "Name of the file to save the generated PDF") String fileName,
-            @ToolParam(description = "Content to be included in the PDF") String content) {
-        String fileDir = this.FILE_SAVE_DIR + "/pdf";
+            @ToolParam(description = "保存生成的 PDF 文件的文件名") String fileName,
+            @ToolParam(description = "要包含在 PDF 中的内容") String content) {
+        String fileDir = this.fileSaveDir + "/pdf";
         String filePath = fileDir + "/" + fileName;
         try {
             // 创建目录
@@ -57,9 +59,9 @@ public class PDFGenerationTool {
                 // 添加段落并关闭文档
                 document.add(paragraph);
             }
-            return "PDF generated successfully to: " + filePath;
+            return "PDF 已成功生成 " + filePath;
         } catch (IOException e) {
-            return "Error generating PDF: " + e.getMessage();
+            return "生成 PDF 时出错 " + e.getMessage();
         }
     }
 

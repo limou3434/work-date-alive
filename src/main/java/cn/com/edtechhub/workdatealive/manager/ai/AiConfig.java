@@ -40,7 +40,7 @@ public class AiConfig {
     /**
      * 保存数据持久化文件的目录
      */
-    private String dataSaveFileDir = "./log/message/";
+    private String dataSaveFileDir = "./temp/message/";
 
     /**
      * 打印配置

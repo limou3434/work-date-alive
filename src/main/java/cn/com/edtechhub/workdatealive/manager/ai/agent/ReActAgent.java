@@ -15,14 +15,14 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class ReActAgent extends BaseAgent {
 
     /**
-     * 执行思考
+     * 子类必须要实现的执行思考抽象方法
      *
      * @return 是否需要执行行动, true 表示需要执行, false 表示无需执行
      */
     public abstract boolean think();
 
     /**
-     * 执行行动
+     * 子类必须要实现的执行行动抽象方法
      *
      * @return 行动执行结果
      */
@@ -37,17 +37,18 @@ public abstract class ReActAgent extends BaseAgent {
     public String step() {
         try {
             // 执行一次 "思考-行动"
-            boolean shouldAct = think();
+            boolean shouldAct = this.think();
             if (!shouldAct) {
                 String result = "思考完成 - 无需行动";
                 log.debug(result);
                 return result;
             }
-            return act();
-        } catch (Exception e) {
-            // 捕获所有异常
-            return "本次步骤执行失败, 错误原因为: " + e.getMessage();
+            return this.act();
+        } catch (Exception e) { // 捕获所有异常
+            log.debug("执行出错, 错误原因为 {}", e.getMessage());
+            return "本次步骤执行失败, 错误原因为 " + e.getMessage();
         }
+        // 无论是思考完毕还是执行出错, 都需要终止循环, 这个可以交给中止工具来实现
     }
 
 }

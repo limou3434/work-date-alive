@@ -4,6 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpUtil;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 
@@ -12,12 +13,13 @@ import java.io.File;
  *
  * @author <a href="https://github.com/limou3434">limou3434</a>
  */
+@Component
 public class ResourceDownloadTool {
 
     /**
      * 文件保存目录
      */
-    private final String FILE_SAVE_DIR = System.getProperty("user.dir") + "/tmp";
+    private final String FILE_SAVE_DIR = System.getProperty("user.dir") + "/temp";
 
     /**
      * 下载资源
@@ -26,8 +28,8 @@ public class ResourceDownloadTool {
      * @param fileName 文件名
      * @return 下载结果
      */
-    @Tool(description = "Download a resource from a given URL")
-    public String downloadResource(@ToolParam(description = "URL of the resource to download") String url, @ToolParam(description = "Name of the file to save the downloaded resource") String fileName) {
+    @Tool(description = "从给定的 URL 下载资源")
+    public String downloadResource(@ToolParam(description = "要下载的资源的 URL") String url, @ToolParam(description = "保存下载资源的文件名") String fileName) {
         String fileDir = this.FILE_SAVE_DIR + "/download";
         String filePath = fileDir + "/" + fileName;
         try {
@@ -35,9 +37,9 @@ public class ResourceDownloadTool {
             FileUtil.mkdir(fileDir);
             // 使用 Hutool 的 downloadFile 方法下载资源
             HttpUtil.downloadFile(url, new File(filePath));
-            return "Resource downloaded successfully to: " + filePath;
+            return "资源下载成功 " + filePath;
         } catch (Exception e) {
-            return "Error downloading resource: " + e.getMessage();
+            return "下载资源错误 " + e.getMessage();
         }
     }
 

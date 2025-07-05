@@ -1,6 +1,7 @@
 package cn.com.edtechhub.workdatealive;
 
 import cn.com.edtechhub.workdatealive.manager.ai.AIManager;
+import cn.com.edtechhub.workdatealive.manager.ai.agent.Manus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,8 +25,8 @@ public class WorkDateAliveApplication {
         AIManager aiManager = context.getBean(AIManager.class);
 
         // 测试对话
-        String chatId = "1";
-        String message;
+//        String chatId = "1";
+//        String message;
 
 //        // 第一轮
 //        log.debug("[TEST] 第一轮");
@@ -60,6 +61,21 @@ public class WorkDateAliveApplication {
 //        message = "帮我搜索一些哄另一半开心的图片";
 //        log.debug("[TEST] 回答 {}", aiManager.doChatWithMcp(message, chatId));
 
+        Manus manus = context.getBean(Manus.class);
+
+        String userPrompt = """  
+                我的另一半居住在上海静安区，请帮我找到 5 公里内合适的约会地点，
+                并结合一些网络图片，制定一份详细的约会计划，
+                并以 PDF 格式输出""";
+        String answer = manus.run(userPrompt);
+
+        log.debug("[TEST] 回答 {}", answer);
+
     }
 
 }
+
+// TODO: 把整个项目的单元测试代码也加入项目自己, 让 AI 自己检查自己的代码也是非常好的创新点
+// TODO: 可以优化一些关于 if 判断是否抛出异常的代码, 引入通用工具包
+// TODO: 给智能体添加循环检测和处理机制，防止智能体陷入无限循环
+// TODO: 尝试给每一个类都加上单元测试

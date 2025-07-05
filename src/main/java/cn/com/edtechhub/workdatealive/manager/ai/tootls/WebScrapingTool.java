@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -12,6 +13,7 @@ import java.io.IOException;
  *
  * @author <a href="https://github.com/limou3434">limou3434</a>
  */
+@Component
 public class WebScrapingTool {
 
     /**
@@ -20,14 +22,17 @@ public class WebScrapingTool {
      * @param url 网页地址
      * @return 网页内容
      */
-    @Tool(description = "Scrape the content of a web page")
-    public String scrapeWebPage(@ToolParam(description = "URL of the web page to scrape") String url) {
+    @Tool(description = "抓取网页的内容")
+    public String scrapeWebPage(@ToolParam(description = "要抓取的网页的 URL") String url) {
         try {
-            Document doc = Jsoup.connect(url).get();
+            Document doc = Jsoup
+                    .connect(url)
+                    .get();
             return doc.html();
         } catch (IOException e) {
-            return "Error scraping web page: " + e.getMessage();
+            return "抓取网页遇到错误, 可能是该网站有反爬取的机制, 最好换一个地址 " + e.getMessage();
         }
     }
+
 }
 

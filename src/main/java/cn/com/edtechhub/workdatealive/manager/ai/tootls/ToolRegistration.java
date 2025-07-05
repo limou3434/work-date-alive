@@ -1,5 +1,6 @@
 package cn.com.edtechhub.workdatealive.manager.ai.tootls;
 
+import jakarta.annotation.Resource;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbacks;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,13 +10,28 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ToolRegistration {
 
-    // TODO: 制作一个邮箱发送工具
+    @Resource
+    FileOperationTool fileOperationTool;
 
-    /**
-     * 搜索 API 密钥
-     */
-    @Value("${search-api.api-key}")
-    private String searchApiKey;
+    @Resource
+    WebSearchTool webSearchTool;
+
+    @Resource
+    WebScrapingTool webScrapingTool;
+
+    @Resource
+    ResourceDownloadTool resourceDownloadTool;
+
+    @Resource
+    TerminalOperationTool terminalOperationTool;
+
+    @Resource
+    PDFGenerationTool pdfGenerationTool;
+
+    @Resource
+    TerminateTool terminateTool;
+
+    // TODO: 制作一个邮箱发送工具
 
     /**
      * 注册所有工具
@@ -35,13 +51,6 @@ public class ToolRegistration {
         有了这个注册类，如果需要添加或移除工具，只需修改这一个类即可，更利‌于维护。
         */
 
-        FileOperationTool fileOperationTool = new FileOperationTool();
-        WebSearchTool webSearchTool = new WebSearchTool(searchApiKey);
-        WebScrapingTool webScrapingTool = new WebScrapingTool();
-        ResourceDownloadTool resourceDownloadTool = new ResourceDownloadTool();
-        TerminalOperationTool terminalOperationTool = new TerminalOperationTool();
-        PDFGenerationTool pdfGenerationTool = new PDFGenerationTool();
-        TerminateTool terminateTool = new TerminateTool();
         return ToolCallbacks.from(
                 fileOperationTool,
                 webSearchTool,
