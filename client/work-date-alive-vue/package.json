@@ -1,0 +1,21 @@
+{
+  "name": "work-date-alive-vue",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3000 --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite --port 3000 --host 127.0.0.1 preview"
+  },
+  "dependencies": {
+    "@vueuse/head": "^2.0.0",
+    "axios": "^1.3.6",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.1.0",
+    "vite": "^4.3.9"
+  }
+}
